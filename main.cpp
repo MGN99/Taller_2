@@ -30,6 +30,88 @@ int obtenerFilaVacia(int columna, const std::vector<std::vector<char>> &tablero)
     return -1; // Columna llena
 }
 
+int evaluarTablero(const std::vector<std::vector<char>> &tablero, char jugador, char oponente) {
+    // Implementa una función de evaluación simple para el tablero.
+    // Puedes ajustar y mejorar esta función según tus necesidades.
+    // Esta función devuelve un valor más alto si el jugador actual está en una posición fuerte.
+
+    // Aquí, simplemente contamos el número de fichas consecutivas para el jugador actual y el oponente.
+    int valorJugador = 0;
+    int valorOponente = 0;
+
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
+            if (tablero[i][j] == jugador) {
+                valorJugador++;
+            } else if (tablero[i][j] == oponente) {
+                valorOponente++;
+            }
+        }
+    }
+
+    return valorJugador - valorOponente;
+}
+
+bool tableroLleno(const std::vector<std::vector<char>> &tablero) {
+    for (int j = 0; j < COLS; ++j) {
+        if (tablero[0][j] == ' ') {
+            return false;  // Todavía hay al menos una columna vacía
+        }
+    }
+    return true;  // Todas las columnas están llenas
+}
+
+int minimax(std::vector<std::vector<char>> &tablero, int profundidad, bool esMaximizador, char jugador, char oponente) {
+    if (profundidad == 0 || tableroLleno(tablero)) {
+        return evaluarTablero(tablero, jugador, oponente);
+    }
+
+    if (esMaximizador) {
+        int mejorValor = INT_MIN;
+        for (int columna = 1; columna <= COLS; ++columna) {
+            if (columnaValida(columna, tablero)) {
+                int fila = obtenerFilaVacia(columna, tablero);
+                tablero[fila][columna - 1] = jugador;
+                mejorValor = std::max(mejorValor, minimax(tablero, profundidad - 1, !esMaximizador, jugador, oponente));
+                tablero[fila][columna - 1] = ' '; // Deshacer la jugada
+            }
+        }
+        return mejorValor;
+    } else {
+        int mejorValor = INT_MAX;
+        for (int columna = 1; columna <= COLS; ++columna) {
+            if (columnaValida(columna, tablero)) {
+                int fila = obtenerFilaVacia(columna, tablero);
+                tablero[fila][columna - 1] = oponente;
+                mejorValor = std::min(mejorValor, minimax(tablero, profundidad - 1, !esMaximizador, jugador, oponente));
+                tablero[fila][columna - 1] = ' '; // Deshacer la jugada
+            }
+        }
+        return mejorValor;
+    }
+}
+
+int tomarDecisionIA(std::vector<std::vector<char>> &tablero, char jugador, char oponente) {
+    int mejorValor = INT_MIN;
+    int mejorColumna = -1;
+
+    for (int columna = 1; columna <= COLS; ++columna) {
+        if (columnaValida(columna, tablero)) {
+            int fila = obtenerFilaVacia(columna, tablero);
+            tablero[fila][columna - 1] = jugador;
+            int valorMinimax = minimax(tablero, 3, false, jugador, oponente); // Ajusta la profundidad según tus necesidades
+            tablero[fila][columna - 1] = ' '; // Deshacer la jugada
+
+            if (valorMinimax > mejorValor) {
+                mejorValor = valorMinimax;
+                mejorColumna = columna;
+            }
+        }
+    }
+
+    return mejorColumna;
+}
+
 bool hayGanador(const std::vector<std::vector<char>> &tablero, char jugador, int fila, int columna) {
     // Verificar en la fila
     int contador = 0;
@@ -93,14 +175,7 @@ bool hayGanador(const std::vector<std::vector<char>> &tablero, char jugador, int
     return false;
 }
 
-bool tableroLleno(const std::vector<std::vector<char>> &tablero) {
-    for (int j = 0; j < COLS; ++j) {
-        if (tablero[0][j] == ' ') {
-            return false;  // Todavía hay al menos una columna vacía
-        }
-    }
-    return true;  // Todas las columnas están llenas
-}
+
 
 int jugarTurnoUsuario(std::vector<std::vector<char>> &tablero, char jugador, int &columnaUsuario) {
     int columna;
