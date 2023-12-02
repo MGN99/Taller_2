@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 
 using namespace std;
@@ -16,6 +17,8 @@ public:
 
         cout << "Seleccione la dificultad (1: Facil, 2: Intermedia, 3: Dificil): ";
         cin >> dificultad;
+
+        auto start_time = std::chrono::high_resolution_clock::now();
 
         while (!juegoTerminado) {
             imprimirTablero();
@@ -48,6 +51,10 @@ public:
                 juegoTerminado = true;
             }
         }
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+        cout << "Tiempo de ejecucion: " << duration.count() << " ms" << endl;
     }
 
 private:
