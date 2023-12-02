@@ -91,15 +91,32 @@ int minimax(std::vector<std::vector<char>> &tablero, int profundidad, bool esMax
     }
 }
 
-int tomarDecisionIA(std::vector<std::vector<char>> &tablero, char jugador, char oponente) {
+int tomarDecisionIA(std::vector<std::vector<char>> &tablero, char jugador, char oponente, int dificultad) {
     int mejorValor = INT_MIN;
     int mejorColumna = -1;
+    int profundidad;
+
+    // Ajusta la profundidad según la dificultad
+    switch (dificultad) {
+        case 1:
+            profundidad = 2;  // Dificultad fácil
+            break;
+        case 2:
+            profundidad = 4;  // Dificultad intermedia
+            break;
+        case 3:
+            profundidad = 6;  // Dificultad difícil
+            break;
+        default:
+            profundidad = 3;  // Por defecto, una profundidad moderada
+            break;
+    }
 
     for (int columna = 1; columna <= COLS; ++columna) {
         if (columnaValida(columna, tablero)) {
             int fila = obtenerFilaVacia(columna, tablero);
             tablero[fila][columna - 1] = jugador;
-            int valorMinimax = minimax(tablero, 3, false, jugador, oponente); // Ajusta la profundidad según tus necesidades
+            int valorMinimax = minimax(tablero, profundidad, false, jugador, oponente);
             tablero[fila][columna - 1] = ' '; // Deshacer la jugada
 
             if (valorMinimax > mejorValor) {
@@ -111,6 +128,7 @@ int tomarDecisionIA(std::vector<std::vector<char>> &tablero, char jugador, char 
 
     return mejorColumna;
 }
+
 
 bool hayGanador(const std::vector<std::vector<char>> &tablero, char jugador, int fila, int columna) {
     // Verificar en la fila
@@ -213,6 +231,10 @@ int main() {
     char jugadorUsuario = 'X';
     char jugadorIA = 'O';
     bool juegoTerminado = false;
+    int dificultad;
+
+    std::cout << "Seleccione la dificultad (1: Fácil, 2: Intermedia, 3: Difícil): ";
+    std::cin >> dificultad;
 
     srand(static_cast<unsigned int>(std::time(nullptr)));  // Corregido: utilizar nullptr en lugar de 0
 
