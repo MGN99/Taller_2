@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <cstdlib>  // Para la función rand
-#include <ctime>    // Para la función time
+
 
 const int ROWS = 6;
 const int COLS = 7;
@@ -27,15 +26,11 @@ int obtenerFilaVacia(int columna, const std::vector<std::vector<char>> &tablero)
             return i;
         }
     }
-    return -1; // Columna llena
+    return -1; 
 }
 
 int evaluarTablero(const std::vector<std::vector<char>> &tablero, char jugador, char oponente) {
-    // Implementa una función de evaluación simple para el tablero.
-    // Puedes ajustar y mejorar esta función según tus necesidades.
-    // Esta función devuelve un valor más alto si el jugador actual está en una posición fuerte.
-
-    // Aquí, simplemente contamos el número de fichas consecutivas para el jugador actual y el oponente.
+    
     int valorJugador = 0;
     int valorOponente = 0;
 
@@ -108,7 +103,7 @@ int tomarDecisionIA(std::vector<std::vector<char>> &tablero, char jugador, char 
             profundidad = 6;  // Dificultad difícil
             break;
         default:
-            profundidad = 3;  // Por defecto, una profundidad moderada
+            profundidad = 3;  // dificultad si se ingresa valor no valido
             break;
     }
 
@@ -233,10 +228,10 @@ int main() {
     bool juegoTerminado = false;
     int dificultad;
 
-    std::cout << "Seleccione la dificultad (1: Fácil, 2: Intermedia, 3: Difícil): ";
+    std::cout << "Seleccione la dificultad (1: Facil, 2: Intermedia, 3: Dificil): ";
     std::cin >> dificultad;
 
-    srand(static_cast<unsigned int>(std::time(nullptr)));  // Corregido: utilizar nullptr en lugar de 0
+    
 
     while (!juegoTerminado) {
         imprimirTablero(tablero);
