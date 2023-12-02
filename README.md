@@ -24,3 +24,5 @@ Tiempo de ejecución total del programa en modo Intermedio: Tiempo de ejecución
 Tiempo de ejecución total del programa en modo Difícil: Tiempo de ejecución: 120000 ms aprox (14 movimientos)
 
 para efectos de evaluación dejé el codigo con el método implementado.
+
+La implementación de la poda alfa-beta en el código mejora significativamente la eficiencia del algoritmo Minimax al reducir la cantidad de nodos evaluados durante la búsqueda para evitar explorar ramas que no afectarán el resultado final, permitiendo una búsqueda más rápida y eficiente.
