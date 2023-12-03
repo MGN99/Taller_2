@@ -33,4 +33,5 @@ para efectos de evaluación dejé el codigo con el método implementado.
 La implementación de la poda alfa-beta en el código mejora significativamente la eficiencia del algoritmo Minimax al reducir la cantidad de nodos evaluados durante la búsqueda para evitar explorar ramas que no afectarán el resultado final, permitiendo una búsqueda más rápida y eficiente.
 
 El archivo CSV registra la cantidad de partidas totales jugadas/ cantidad de partidas ganadas por humano/ cantidad de partidas ganadas por IA
+El archivo CSV llamado movimientos registra los movimientos realizados en una partida
 
