@@ -1,4 +1,8 @@
 # Taller_2
+
+Ruta de compilacion:"g++ -o main main.cpp"
+para ejecutar:"./main"
+
 El programa lo dividi en dos clases.
 
 Clase Main: se encarga solo de llamar a un objeto de tipo Conecta4
