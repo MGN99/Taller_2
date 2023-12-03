@@ -59,6 +59,7 @@ public:
         }
         partidasJugadas++;
         
+        
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
@@ -74,11 +75,16 @@ public:
     }
 
     void guardarResultadosCSV() {
-        ofstream archivo("resultados.csv", ios::app);  // Abre el archivo en modo de apendizaje
+        ofstream archivo("resultados.csv", ios::out | ios::app);  // Abre el archivo en modo de escritura y apendizaje
 
         // Verifica si el archivo se abrió correctamente
         if (archivo.is_open()) {
-            archivo << "Partidas,Jugador,Máquina" << endl;
+            // Si es la primera vez que se guarda, escribe la cabecera
+            if (partidasJugadas == 1) {
+                archivo << "Partidas,Jugador,Máquina" << endl;
+            }
+
+            // Escribe los resultados acumulativos
             archivo << partidasJugadas << "," << puntuacionJugador << "," << puntuacionIA << endl;
 
             archivo.close();  // Cierra el archivo
@@ -87,6 +93,61 @@ public:
             cout << "Error al abrir el archivo 'resultados.csv'" << endl;
         }
     }
+    void reiniciar() {
+        tablero = vector<vector<char>>(ROWS, vector<char>(COLS, ' '));
+    }
+
+    void menu() {
+    int opcion;
+    do {
+        Conecta4 juego;  // Reinicia el juego antes de cada partida
+        cout << "Menú:" << endl;
+        cout << "1. Jugar" << endl;
+        cout << "2. Cargar Partida" << endl;
+        cout << "3. Salir" << endl;
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1:
+                juego.jugar();
+                juego.guardarResultadosCSV();
+                break;
+            case 2:
+                // Agrega aquí la lógica para cargar la partida
+                break;
+            case 3:
+                cout << "Saliendo del programa." << endl;
+                break;
+            default:
+                cout << "Opcion no valida. Intente de nuevo." << endl;
+                break;
+        }
+
+        if (opcion != 3) {
+            int seguirJugando;
+            cout << "¿Desea seguir jugando? (1: Si, 0: No): ";
+
+            // Validación para asegurarse de que se ingrese un 0 o un 1
+            while (true) {
+                cin >> seguirJugando;
+
+                if (cin.fail() || (seguirJugando != 0 && seguirJugando != 1)) {
+                    cin.clear();  
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');  
+                    cout << "Por favor, ingrese 0 o 1: ";
+                } else {
+                    break;
+                }
+            }
+
+            opcion = seguirJugando;
+        }
+
+    } while (opcion == 1);
+}
+
+    
 
 private:
     const static int ROWS = 6;

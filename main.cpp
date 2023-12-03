@@ -4,9 +4,10 @@
 
 
 int main() {
+    
     Conecta4 juego;
-    juego.jugar();
-    juego.guardarResultadosCSV();
-
+    juego.menu();
     return 0;
+    
+    
 }
