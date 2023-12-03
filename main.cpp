@@ -6,6 +6,7 @@
 int main() {
     Conecta4 juego;
     juego.jugar();
+    juego.guardarResultadosCSV();
 
     return 0;
 }

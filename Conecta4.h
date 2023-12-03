@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <fstream>  
+#include <iomanip>
 
 
 using namespace std;
@@ -30,11 +32,13 @@ public:
                 imprimirTablero();
                 cout << "¡Jugador " << jugadorUsuario << " ha ganado!" << endl;
                 juegoTerminado = true;
+                registrarResultado(jugadorUsuario);  // Registra el resultado
                 break;
             } else if (tableroLleno()) {
                 imprimirTablero();
-                cout << "¡Empate! El tablero esta lleno." << endl;
+                cout << "¡Empate! El tablero está lleno." << endl;
                 juegoTerminado = true;
+                registrarResultado(' ');  // Registra el empate
                 break;
             }
 
@@ -45,21 +49,53 @@ public:
                 imprimirTablero();
                 cout << "¡La IA ha ganado!" << endl;
                 juegoTerminado = true;
+                registrarResultado(jugadorIA);  // Registra el resultado
             } else if (tableroLleno()) {
                 imprimirTablero();
-                cout << "¡Empate! El tablero esta lleno." << endl;
+                cout << "¡Empate! El tablero está lleno." << endl;
                 juegoTerminado = true;
+                registrarResultado(' ');  // Registra el empate
             }
         }
+        partidasJugadas++;
+        
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
         cout << "Tiempo de ejecucion: " << duration.count() << " ms" << endl;
     }
 
+    void registrarResultado(char ganador) {
+        if (ganador == jugadorUsuario) {
+            puntuacionJugador++;
+        } else if (ganador == jugadorIA) {
+            puntuacionIA++;
+        }
+    }
+
+    void guardarResultadosCSV() {
+        ofstream archivo("resultados.csv", ios::app);  // Abre el archivo en modo de apendizaje
+
+        // Verifica si el archivo se abrió correctamente
+        if (archivo.is_open()) {
+            archivo << "Partidas,Jugador,Máquina" << endl;
+            archivo << partidasJugadas << "," << puntuacionJugador << "," << puntuacionIA << endl;
+
+            archivo.close();  // Cierra el archivo
+            cout << "Resultados guardados en 'resultados.csv'" << endl;
+        } else {
+            cout << "Error al abrir el archivo 'resultados.csv'" << endl;
+        }
+    }
+
 private:
     const static int ROWS = 6;
     const static int COLS = 7;
+    char jugadorUsuario = 'X';
+    char jugadorIA = 'O';
+    int puntuacionJugador = 0;
+    int puntuacionIA = 0;
+    int partidasJugadas = 0;
 
     vector<vector<char>> tablero;
 
@@ -168,7 +204,7 @@ private:
                 int fila = obtenerFilaVacia(columna);
                 tablero[fila][columna - 1] = jugador;
                 int valorMinimax = minimax(tablero, profundidad, false, jugador, oponente);
-                tablero[fila][columna - 1] = ' '; // Deshacer la jugada
+                tablero[fila][columna - 1] = ' '; 
 
                 if (valorMinimax > mejorValor) {
                     mejorValor = valorMinimax;
