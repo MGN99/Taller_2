@@ -60,7 +60,7 @@ public:
             }
         }
         partidasJugadas++;
-        
+        guardarMovimientosCSV();
         
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
@@ -99,9 +99,103 @@ public:
         tablero = vector<vector<char>>(ROWS, vector<char>(COLS, ' '));
     }
 
+    void guardarMovimientosCSV() {
+        ofstream archivo("movimientos.csv", ios::out | ios::app);  // Abre el archivo en modo de escritura y apendizaje
+
+        // Verifica si el archivo se abrió correctamente
+        if (archivo.is_open()) {
+            // Si es la primera vez que se guarda, escribe la cabecera
+            if (partidasJugadas == 1) {
+                archivo << "Partida,Jugador,Columna,Fila" << endl;
+            }
+
+            // Escribe los movimientos de la partida actual
+            for (int i = 0; i < ROWS; ++i) {
+                for (int j = 0; j < COLS; ++j) {
+                    if (tablero[i][j] != ' ') {
+                        archivo << partidasJugadas << "," << tablero[i][j] << "," << j + 1 << "," << i + 1 << endl;
+                    }
+                }
+            }
+
+            archivo.close();  // Cierra el archivo
+            cout << "Movimientos guardados en 'movimientos.csv'" << endl;
+        } else {
+            cout << "Error al abrir el archivo 'movimientos.csv'" << endl;
+        }
+    }
+
+    void cargarPartida(const string& archivoMovimientos) {
+    ifstream archivo(archivoMovimientos);
+
+    // Verificar si el archivo se abrió correctamente
+    if (!archivo.is_open()) {
+        cout << "Error al abrir el archivo " << archivoMovimientos << endl;
+        return;
+    }
+
+    // Variables temporales para almacenar la información leída del archivo
+    int partida, columna, fila;
+    char jugador;
+
+    // Variable para contar las líneas leídas
+    int contadorLineas = 0;
+
+    string linea;
+    while (getline(archivo, linea)) {
+        ++contadorLineas;
+
+        // Saltar las primeras tres líneas
+        if (contadorLineas <= 3) {
+            continue;
+        }
+
+        // Procesar la línea usando stringstream
+        stringstream ss(linea);
+        if (ss >> partida >> jugador >> columna >> fila) {
+            // Imprimir información de depuración
+            cout << "Leyendo movimiento: Partida=" << partida << ", Jugador=" << jugador
+                << ", Columna=" << columna << ", Fila=" << fila << endl;
+
+            // Verificar si los valores leídos están dentro de rangos válidos
+            if (partida <= 0 || columna < 1 || columna > COLS || fila < 1 || fila > ROWS || (jugador != jugadorUsuario && jugador != jugadorIA)) {
+                cout << "Error: Datos incorrectos en el archivo " << archivoMovimientos << endl;
+                return;
+            }
+
+            // Aplicar el movimiento solo si pertenece a la partida actual
+            if (partida == partidasJugadas) {
+                int filaVacia = obtenerFilaVacia(columna);
+
+                // Verificar si la fila obtenida es válida
+                if (filaVacia >= 0 && filaVacia < ROWS) {
+                    tablero[filaVacia][columna - 1] = jugador;
+                } else {
+                    cout << "Error: Movimiento fuera de los límites del tablero en el archivo " << archivoMovimientos << endl;
+                    return;
+                }
+            } else {
+                cout << "Error: Movimiento no pertenece a la partida actual en el archivo " << archivoMovimientos << endl;
+                return;
+            }
+
+            // Imprimir el tablero después de cada movimiento
+            imprimirTablero();
+        }
+    }
+
+    // Cerrar el archivo después de leer todos los movimientos
+    archivo.close();
+
+    // Imprimir el tablero después de cargar la partida
+    imprimirTablero();
+}
+
     void menu() {
     int opcion;
+    string archivoMovimientos;
     do {
+        ++partidasJugadas;
         Conecta4 juego;  // Reinicia el juego antes de cada partida
         cout << "Menú:" << endl;
         cout << "1. Jugar" << endl;
@@ -116,7 +210,16 @@ public:
                 juego.guardarResultadosCSV();
                 break;
             case 2:
-                // Agrega aquí la lógica para cargar la partida
+                
+                cout << "Ingrese el nombre del archivo de movimientos: ";
+                cin >> archivoMovimientos;
+
+                juego.cargarPartida(archivoMovimientos);
+
+                // Mostrar el estado actual del tablero después de cargar la partida
+                juego.imprimirTablero();
+
+                cout << "Partida cargada exitosamente." << endl;
                 break;
             case 3:
                 cout << "Saliendo del programa." << endl;
