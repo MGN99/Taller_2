@@ -5,6 +5,7 @@
 #include <iomanip>
 
 
+
 using namespace std;
 
 class Conecta4 {
