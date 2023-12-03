@@ -12,6 +12,7 @@ Clase Conecta4: Se encarga de crear la matriz que simula el juego Conecta4 e imp
 -Implementar minimax Poda Alfa beta
 -logica de la jugada del humano
 -logica de la jugada de la IA.
+-logica de guardado de puntajes de Humano e IA en archivo csv
 
 Conecta4 con minimax Poda Alfa-Beta
 Tiempo de ejecucion total del programa en modo Fácil: Tiempo de ejecución: 3830 ms (4 movimientos)
@@ -26,3 +27,6 @@ Tiempo de ejecución total del programa en modo Difícil: Tiempo de ejecución: 
 para efectos de evaluación dejé el codigo con el método implementado.
 
 La implementación de la poda alfa-beta en el código mejora significativamente la eficiencia del algoritmo Minimax al reducir la cantidad de nodos evaluados durante la búsqueda para evitar explorar ramas que no afectarán el resultado final, permitiendo una búsqueda más rápida y eficiente.
+
+El archivo CSV registra la cantidad de partidas totales jugadas/ cantidad de partidas ganadas por humano/ cantidad de partidas ganadas por IA
+
